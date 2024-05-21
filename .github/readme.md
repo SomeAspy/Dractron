@@ -21,3 +21,7 @@ Commands:
 - `pnpm build`: build the project
 - `pnpm run`: run the built project (expects `build` to have been run)
 - `pnpm dev`: build and run the project
+
+## What's inside
+
+- Reverse engineered iDrac8 login process (spoiler alert: it's not that hard)
