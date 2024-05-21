@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, session } from "electron";
 
 
 const url = "https://192.168.1.215/"
@@ -15,14 +15,39 @@ const res = await fetch(url+"/data/login", {
     body: `user=${user}&password=${pass}`,
 })
 
+const loginCookie = res.headers.getSetCookie();
 const XmlResponse = await res.text();
+const authLink = /(?<=<forwardUrl>)(.*)(?=<\/forwardUrl>)/.exec(XmlResponse)
 
-console.log(XmlResponse)
+if(!authLink){
+    console.error("FATAL: Could not get authentication tokens. You may have entered the login incorrectly or have max sessions opened.");
+    process.exit();
+}
 
+if(!loginCookie[0]){
+    console.error("FATAL: Could not extract login cookie!");
+    process.exit();
+}
 
 app.once("ready", ()=>{
+    
+    // https://stackoverflow.com/a/64954227/15324411
+    session.defaultSession.webRequest.onBeforeSendHeaders({urls: [`${url}*`]}, (details, callback)=>{
+    details.requestHeaders["Cookie"] = loginCookie[0]!
+    callback({requestHeaders: details.requestHeaders})
+    })
+
     const window = new BrowserWindow();
-    void window.loadURL(url+/(?<=<forwardUrl>)(.*)(?=<\/forwardUrl>)/.exec(XmlResponse)![0])
+    window.webContents.openDevTools()
+    void window.loadURL(`${url}/${authLink[0]}`)
+    //void window.webContents.executeJavaScript(`document.location="login.html${authLink[0]}"`)
+
+    window.on("close", ()=>{
+        // try to logout, so the session isn't left hanging
+        async ()=>{
+            await window.webContents.executeJavaScript("f_logout();")
+        }
+    })
 })
 
 app.on('certificate-error',(event, __webContents, __url, __error, certificate, callback)=>{
