@@ -3,7 +3,10 @@ import { app, BrowserWindow } from "electron";
 
 const url = "https://192.168.1.215/"
 
-import { user, pass} from "../indevconfig.json"
+import untypedJson from "../indevconfig.json" with {type: "json"}
+
+const { pass, user} = untypedJson as {pass:string; user:string}
+
 
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
@@ -13,6 +16,8 @@ const res = await fetch(url+"/data/login", {
 })
 
 const XmlResponse = await res.text();
+
+console.log(XmlResponse)
 
 
 app.once("ready", ()=>{

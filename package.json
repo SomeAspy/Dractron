@@ -6,7 +6,7 @@
 		"build": "tsc",
 		"dev": "tsc --skipLibCheck && electron ."
 	},
-	"main": "dist/index.js",
+	"main": "dist/src/index.js",
 	"dependencies": {
 		"electron": "^30.0.6"
 	},
