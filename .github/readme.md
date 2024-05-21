@@ -11,7 +11,8 @@ At current stage of development, you must have a file named `indevconfig.json` a
 ```json
 {
     "user": "root",
-    "pass": "ServerPasswordHere"
+    "pass": "ServerPasswordHere",
+    "url": "https://192.168.1.215/"
 }
 ```
 
