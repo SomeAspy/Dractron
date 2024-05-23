@@ -1,10 +1,21 @@
 # Dractron
 
-Electron app for iDRAC's virtual console.
+## Abandoned for the most part
 
-Only works for iDrac 8+, as these versions support HTML5 based KVMs
+I've found that hidden in iDRAC 8 settings is a VNC server, and there is no reason to have a dedicated electron app to run the web console.
+<https://www.dell.com/support/manuals/en-us/poweredge-fx2/idrac8_2.30.30.30_ug/configuring-vnc-server-using-idrac-web-interface?guid=guid-20ef1550-da56-43fd-83c5-567309a924cc&lang=en-us>
 
-Untested on iDrac 9. I do not have access to an iDrac 9 machine.
+I haven't gotten SSL encryption working with RealVNC. If I figure it out I will update this readme
+
+![iDRAC VNC settings](../assets/idracvnc.png)
+
+---
+
+Electron app for iDRAC
+
+Only tested on iDRAC 8.
+
+Untested on iDRAC 9. I do not have access to an iDrac 9 machine.
 
 At current stage of development, you must have a file named `indevconfig.json` at the head of the project.
 
@@ -24,4 +35,4 @@ Commands:
 
 ## What's inside
 
-- Reverse engineered iDrac8 login process (spoiler alert: it's not that hard)
+- Reverse engineered iDrac8 login/logout process (spoiler alert: it's not that hard)

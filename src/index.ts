@@ -11,6 +11,7 @@ if(url.endsWith("/")){
     url = url.slice(0,-1); // Dell's getRPViewerCurrentScriptPath() function will return garbage if there is a slash at the end
 }
 
+// This is NOT formdata for whatever reason.
 const res = await fetch(url+"/data/login", {
     method: "POST",
     body: `user=${user}&password=${pass}`,
@@ -27,6 +28,7 @@ if(!authLink){
     process.exit();
 }
 
+// tokens were extracted in prior versions for specific authentication reasons. ex: /virtualconsolehtml5.html?ipAddr=[localip]&kvmPort=5900&vmPriv=true&lang=en&aimSession=99&ST2=${token2[0]}&TokenName=ST1&TokenKey=${token1[0]}
 const token1 = /(?<=ST1=)(.*)(?=,ST2)/.exec(authLink[0]);
 const token2 = /(?<=ST2=)(.*)/.exec(authLink[0]);
 
@@ -40,30 +42,7 @@ if(!token1 || !token2){
     process.exit();
 }
 
-/*
-app.once("ready", ()=>{
-    
-    // https://stackoverflow.com/a/64954227/15324411
-        session.defaultSession.webRequest.onBeforeSendHeaders({urls: [`${url}*`]}, (details, callback)=>{
-        details.requestHeaders["Cookie"] = loginCookie[0]!
-        callback({requestHeaders: details.requestHeaders})
-    })
-
-    const window = new BrowserWindow();
-    window.webContents.openDevTools()
-    void window.loadURL(`${url}/${authLink[0]}`)
-
-    window.on("close", ()=>{
-        // try to logout, so the session isn't left hanging
-        async ()=>{
-            await window.webContents.executeJavaScript("f_logout();")
-        }
-    })
-})
-*/
-
 app.once("ready", async ()=>{
-    
     // https://stackoverflow.com/a/64954227/15324411
     session.defaultSession.webRequest.onBeforeSendHeaders({urls: [`${url}/*`]}, (details, callback)=>{
         details.requestHeaders["Cookie"] = loginCookie[0]!;
@@ -71,8 +50,8 @@ app.once("ready", async ()=>{
     });
 
     const window = new BrowserWindow();
-    window.webContents.openDevTools();
-    await window.loadURL(`${url}/virtualconsolehtml5.html?ipAddr=192.168.1.215&kvmPort=5900&vmPriv=true&lang=en&aimSession=99&ST2=${token2[0]}&TokenName=ST1&TokenKey=${token1[0]}`)
+    //window.webContents.openDevTools();
+    await window.loadURL(`${url}/${authLink[0]}`);
 });
 
 app.once("quit", ()=>{
